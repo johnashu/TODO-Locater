@@ -16,11 +16,14 @@ class TodoLocater:
         g = glob(self.path + f"/**/*{self.ext}", recursive=self.recursive)
         if exists(self.path):
             for x in g:
-                print(f"Searching  ::  {x}")
+                try:
+                    print(f"Searching  ::  {x}")
 
-                result = self.find_todo(x)
-                if result:
-                    self.todos[x] = result
+                    result = self.find_todo(x)
+                    if result:
+                        self.todos[x] = result
+                except PermissionError:
+                    pass # not a ext file (possible a folder)
         else:
             raise OSError("Path does not exist.")
 

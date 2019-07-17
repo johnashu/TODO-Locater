@@ -4,8 +4,7 @@ from glob import glob
 
 def _get_files(path, ext, recursive=False):
     # return a list of files 
-    return glob(path + f"/**/*{ext}", recursive=recursive)
-    
+    return glob(path + f"/**/*{ext}", recursive=recursive)    
 
 def _find_todos_in_file(fn, todo_token, comment_start):
     # return a list of todos in the file
@@ -27,10 +26,13 @@ def find_todos(path, ext, todo_token = 'TODO', comment_start = '#', recursive=Fa
     files = _get_files(path, ext,recursive=recursive)
     if exists(path):
         for x in files:
-            print(f"Searching  ::  {x}")
-            result = _find_todos_in_file(x, todo_token, comment_start)
-            if result:
-                todos[x] = result
+            try:
+                print(f"Searching  ::  {x}")
+                result = _find_todos_in_file(x, todo_token, comment_start)
+                if result:
+                    todos[x] = result
+            except PermissionError:
+                pass # not a ext file (possible a folder)
     else:
         raise OSError("Path does not exist.")
     return todos
@@ -43,11 +45,12 @@ def show_todos(todos: dict):
         for x in v:
             print(f">>>{x[1]}")
 
-def save_csv(todos):
+def save_csv(todos, ext):
     # save todos to a csv file
     import csv
-    for k, v in todos.items():
-        with open(f"{k}.csv", "w", newline="") as csvfile:
+    for k, v in todos.items():       
+        k = k.split(ext)[0][:-1]
+        with open(f"{k}-TODOS.csv", "w", newline="") as csvfile:
             w = csv.writer(csvfile, delimiter=",", quoting=csv.QUOTE_MINIMAL)
             for row in v:
                 w.writerow(row)
@@ -55,4 +58,4 @@ def save_csv(todos):
 if __name__ == "__main__":
     todos = find_todos('.', ext='py', comment_start='#', recursive=True)
     show_todos(todos)
-    save_csv(todos)
+    save_csv(todos, 'py')

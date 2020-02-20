@@ -60,13 +60,3 @@ class TodoLocater:
                     w.writerow(r)
 
 
-if __name__ == "__main__":
-    path = "."
-    ext = "py"
-    td = "TODO"
-    comment = '#'
-
-    find = TodoLocater(path, ext, td, comment, recursive=True)
-    find.show_todos()
-
-

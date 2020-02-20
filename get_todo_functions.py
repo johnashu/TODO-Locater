@@ -55,7 +55,3 @@ def save_csv(todos, ext):
             for row in v:
                 w.writerow(row)
 
-if __name__ == "__main__":
-    todos = find_todos('.', ext='py', comment_start='#', recursive=True)
-    show_todos(todos)
-    save_csv(todos, 'py')
